@@ -261,6 +261,7 @@ class DashboardView:
         c1, c2 = st.columns(2)
         c1.metric("Total de Registos", f"{metrics.get('total_records', 0):,}")
         c2.metric("Total de Colunas", f"{metrics.get('total_columns', 0):,}")
+
         
         st.divider()
         st.markdown("##### Análise por Coluna")
@@ -331,9 +332,10 @@ class DashboardView:
         if df.empty:
             st.warning("Nenhum dado para exibir.")
             return
-
-        st.dataframe(df, use_container_width=True)
-        st.info(f"Mostrando {len(df)} registos.")
+        
+        with st.expander(expanded= True):
+            st.dataframe(df, use_container_width=True)
+            st.info(f"Mostrando {len(df)} registos.")
 
 # ====================================
 # CONTROLLER LAYER
@@ -353,14 +355,22 @@ class DashboardController:
         if self.model.df is None or self.model.df.empty:
             st.error("Falha ao carregar os dados. Verifique a fonte de dados.")
             return
-        
+        # Header
         self.view.render_header(self.title, self.description)
+        
+        
+        # Configuração de filtros e métricas
         column_info = self.model.get_column_info()
         
         filters = self.view.render_sidebar_filters(self.model.df, column_info)
         df_filtered = self.model.apply_filters(filters)
         
         metrics = self.model.calculate_metrics()
+
+        # Tabela de Dados Detalhados
+        self.view.render_data_table(df_filtered, "🗂️ Dados Consolidados")
+
+        # Métricas do arquivo analisados
         self.view.render_metrics(metrics, column_info)
         st.markdown("---")
         
@@ -381,8 +391,7 @@ class DashboardController:
         self._render_selected_chart(chart_config, chart_generator)
         st.markdown("---")
         
-        # Tabela de Dados Detalhados
-        self.view.render_data_table(df_filtered, "🗂️ Dados Consolidados")
+
 
     def _render_selected_chart(self, config: Dict[str, Any], chart_generator: MatplotlibChartGenerator):
         """Renderiza o gráfico selecionado com base na configuração da view."""
