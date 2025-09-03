@@ -264,15 +264,16 @@ class DashboardView:
 
         
         st.divider()
-        st.markdown("##### Análise por Coluna")
+        st.markdown("## Análise Estatística por Coluna")
         selected_col = st.selectbox("Selecione uma coluna numérica para ver os detalhes:", column_info["numeric"])
 
         if selected_col and selected_col in metrics.get("numeric_details", {}):
             details = metrics["numeric_details"][selected_col]
             cols = st.columns(4)
-            cols[0].metric(f"Média de {selected_col.title()}", f"{details.get('Média', 0):.2f}")
-            cols[1].metric(f"Mediana de {selected_col.title()}", f"{details.get('Mediana', 0):.2f}")
-            cols[2].metric(f"Mínimo de {selected_col.title()}", f"{details.get('Mínimo', 0):.2f}")
+            cols[0].metric(f"Mediana de {selected_col.title()}", f"{details.get('Mediana', 0):.2f}")
+
+            cols[1].metric(f"Mínimo de {selected_col.title()}", f"{details.get('Mínimo', 0):.2f}")
+            cols[2].metric(f"Média de {selected_col.title()}", f"{details.get('Média', 0):.2f}")
             cols[3].metric(f"Máximo de {selected_col.title()}", f"{details.get('Máximo', 0):.2f}")
 
     def render_grouped_analysis_controls(self, column_info: Dict[str, List[str]]) -> Dict[str, str]:
@@ -294,7 +295,8 @@ class DashboardView:
         }
 
     def render_chart_controls(self, column_info: Dict[str, List[str]]) -> Dict[str, Any]:
-        st.subheader("🎨 Visualização dos Dados Filtrados")
+        st.subheader("🎨 Tipos de Gráficos dos Resultados ")
+        st.write("Selecione o tipo de gráfico e seus eixos X e Y")
         chart_config = {}
         col1, col2, col3, col4 = st.columns(4)
         chart_map = {"Linha": "line", "Barras": "bar", "Pizza": "pie", "Dispersão": "scatter"}
@@ -428,7 +430,7 @@ def create_mvc_dashboard(data_source: Union[str, pd.DataFrame], title: str = "Da
 
 if __name__ == "__main__":
     # st.set_page_config() deve ser o primeiro comando Streamlit no script.
-    st.set_page_config(page_title="Análise de Resultados", page_icon="📊", layout="wide")
+    st.set_page_config(page_title="Dashboard de Resultados", page_icon="📊", layout="wide")
 
     st.sidebar.title("Fonte de Dados")
     
