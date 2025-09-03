@@ -328,12 +328,12 @@ class DashboardView:
             st.pyplot(fig, use_container_width=True)
 
     def render_data_table(self, df: pd.DataFrame, title: str):
-        st.subheader(title)
+        #st.subheader(title)
         if df.empty:
             st.warning("Nenhum dado para exibir.")
             return
         
-        with st.expander(expanded= True):
+        with st.expander(label=title,expanded= True):
             st.dataframe(df, use_container_width=True)
             st.info(f"Mostrando {len(df)} registos.")
 
